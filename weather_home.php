@@ -23,6 +23,7 @@ function capitalizeFirstLetter(string){
         console.log(data);
         console.log(data.weather[0].icon);
         var uppercase = capitalizeFirstLetter($("#searchWeather").val());
+        
         $('#weather').html(
           "<div style='font-size:20px;'>"+uppercase+"</div>"
           +"<div>"+capitalizeFirstLetter(data.weather[0].description)+"</div>"
@@ -147,7 +148,7 @@ function capitalizeFirstLetter(string){
 <div id="UserAccount">
       <button class="btnAccount">Nom user</button>
       <button class="btnAccount" onclick="location.href='manageAccount.php'">Voir mon compte </button>
-      <button class="btnAccount">Voir mon historique </button>
+      <button class="btnAccount"><i class="fas fa-eye"></i> Voir mon historique </button>
       <button  class="btnAccount"onclick="location.href='controllerDestroySession.php'">Deconnexion</button>
     </div>
 
@@ -156,7 +157,7 @@ function capitalizeFirstLetter(string){
     <i class="fas fa-arrow-circle-left"></i> Retour
   </button>
   <div id="searchUser">
-    <h3>Cherchez une ville </h3>
+    <h3><i class="fas fa-search"></i> Cherchez une ville </h3>
      <input class='InputSearchUser' type="text" placeholder="Entrez une ville" id="searchWeather"/>
      <button class='btnSearchUser'value="Rechercher" onclick="ajaxData()" >Rechercher</button>
   </div>

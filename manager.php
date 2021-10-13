@@ -52,7 +52,7 @@ class manager{
         $args['last_name'],
         $args['first_name'],
         $args['mail'],
-        $this->encrypt($args['passwd'],"piscineWeather"),
+        $this->encrypt($args['passwd'],$this->encryptionKey()),
         $this->genererChaineAleatoire()
     ));
 
@@ -62,6 +62,11 @@ class manager{
     else{
     echo "Error";
     }
+}
+
+function encryptionKey(){
+    $private_secret_key = '1f4276388ad3214c873428dbef42243f';
+    return $private_secret_key;
 }
    //Méthode qui permet de crypter un mot de passe
    function encrypt(string $message, string $encryption_key)
@@ -104,19 +109,45 @@ class manager{
 
 function connectionUser($args){
     $pdo = $this->connexion_bd();
-    $selectRequestRegistration = $pdo->prepare("SELECT SessionId from user WHERE mail = ? and passwd = ?");
-        $selectRequestRegistration->execute(array($args['mail'],
-        $this->encrypt($args['passwd'],"piscineWeather")));
-        $req = $selectRequestRegistration->fetch();
-        if($req){
+   
+    $selectRequestRegistration = $pdo->prepare("SELECT passwd from User WHERE mail = ? ");
+        $selectRequestRegistration->execute(array($args['mail']));
+        $reqPass = $selectRequestRegistration->fetch();
+        if($reqPass != false){
+            if(!empty(sizeof($reqPass)) && $this->decrypt($reqPass["passwd"],$this->encryptionKey()) == $args['passwd']){
+            $genereid = $this->genererChaineAleatoire(20);
+            //On modifie son id par rapport à son mail
+            $mail = $args['mail'];
+            $request = $pdo->prepare("UPDATE User set SessionId=:SessionId WHERE mail='$mail'");
+            $insert_genereId = $request->execute(array(
+                'SessionId' => $genereid
+            ));
+
             session_start();
-            $_SESSION['id'] = $req['SessionId'];
+            $_SESSION['id'] = $genereid;
             header("Location:index.php");
         }
+    }
         else{
             echo "Error Connection";
         }
 
+}
+function UpdateDataUser($args){
+    $pdo = $this->connexion_bd();
+    session_start();
+    $select = $pdo->prepare("SELECT idUser from User WHERE SessionId = ? ");
+    $select->execute(array($_SESSION['id']));
+    $idUSer = $select->fetch()['idUser'];
+    $UpdateDataUser = $pdo->prepare("UPDATE User set last_name = ?,first_name = ?,mail = ?,passwd = ? WHERE idUser = ? ");
+    $UpdateDataUser->execute(array($args['last_name'],
+        $args['first_name'],
+        $args['mail'],
+        $this->encrypt($args['passwd'],$this->encryptionKey()),
+        $idUSer
+    ));
+    session_destroy();
+    header("Location:index.php");
 }
 
     function registrationWeather($args){

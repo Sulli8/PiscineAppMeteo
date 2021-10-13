@@ -11,7 +11,7 @@
   </head>
 
   <body>
-     <form action="controller_registration.php" method="post">
+     <form action="controller_UpdateRegistration.php" method="post">
      <h2><i class="fas fa-smog"></i> Piscine | Météo</h2>
      <?php 
      require_once("manager.php");
@@ -32,17 +32,7 @@
      <input type="mail" name="mail" value=<?php echo $array['mail']; ?> required>
 
      <label for=""><i class="fas fa-lock"></i> Password</label>
-     <input type="text" name='passwd' value=<?php echo $array['passwd'];?> required>
-
-    <!--<label for=""><i class="fas fa-signature"></i> Last Name</label>
-       <input type="text" name="last_name" required>
-       <label for=""><i class="fas fa-id-card"></i> First Name</label>
-       <input type="text" name="first_name" required>
-       <label for=""><i class="fas fa-envelope"></i> Mail</label>
-       <input type="mail" name="mail" required>
-       <label for=""><i class="fas fa-lock"></i> Password</label>
-       <input type="password" name="passwd" required>
-       <input type="submit" value="Modifier">-->
+     <input type="text" name='passwd' value=<?php echo $manager->decrypt($array['passwd'],$manager->encryptionKey());?> required>
        <input type="submit" value="Modifier">
      </form> 
   </body>
