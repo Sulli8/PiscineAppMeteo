@@ -152,10 +152,10 @@ function UpdateDataUser($args){
 
     function registrationWeather($args){
         $pdo = $this->connexion_bd();
-
         $selectRequestRegistration = $pdo->prepare("SELECT * from City WHERE name = ?");
         $selectRequestRegistration->execute(array($args['nameCity']));
         $req = $selectRequestRegistration->fetch();
+        
         if($req){
             if($req['name'] === $args['nameCity']){
                 $selectRequestRegistration = $pdo->prepare("SELECT idCity from City WHERE name = ?");
@@ -165,10 +165,11 @@ function UpdateDataUser($args){
                 $selectRequestRegistrationWeather->execute(array($selectRequestRegistration->fetch()['idCity']));
                 
                 if(sizeof($selectRequestRegistrationWeather->fetch()) != 0){
+                    $this->registeredHistorics($args['nameCity']);
                     die("Cette meteo existe dans le base !");
                 }
                 else{
-                    $requestRegistration = $pdo->prepare("INSERT INTO Weather(tmp,description,humidity,time_zone,latitude,longitude,speed_wind,deg_wind,City_idCity) VALUES(?,?,?,?,?,?,?,?,?)");
+                    $requestRegistration = $pdo->prepare("INSERT INTO Weather(tmp,description,humidity,time_zone,latitude,longitude,speed_wind,deg_wind,City_idCity,icon) VALUES(?,?,?,?,?,?,?,?,?,?)");
                         $requestRegistration->execute(array(
                         $args['temp'],
                         $args['description'],
@@ -178,9 +179,13 @@ function UpdateDataUser($args){
                         $args['longitude'],
                         $args['speed_wind'],
                         $args['deg_wind'],
-                        $selectRequestRegistration->fetch()['idCity']
+                        $selectRequestRegistration->fetch()['idCity'],
+                        $args['icon']
                     ));
+
+                    $this->registeredHistorics($args['nameCity']);
                 }
+                
             }
            
         }
@@ -193,7 +198,7 @@ function UpdateDataUser($args){
             $selectRequestRegistration = $pdo->prepare("SELECT idCity from City WHERE name = ?");
             $selectRequestRegistration->execute(array($args['nameCity']));
             
-            $requestRegistration = $pdo->prepare("INSERT INTO Weather(tmp,description,humidity,time_zone,latitude,longitude,speed_wind,deg_wind,City_idCity) VALUES(?,?,?,?,?,?,?,?,?)");
+            $requestRegistration = $pdo->prepare("INSERT INTO Weather(tmp,description,humidity,time_zone,latitude,longitude,speed_wind,deg_wind,City_idCity,icon) VALUES(?,?,?,?,?,?,?,?,?,?)");
             $requestRegistration->execute(array(
                 $args['temp'],
                 $args['description'],
@@ -203,12 +208,49 @@ function UpdateDataUser($args){
                 $args['longitude'],
                 $args['speed_wind'],
                 $args['deg_wind'],
-                $selectRequestRegistration->fetch()['idCity']
+                $selectRequestRegistration->fetch()['idCity'],
+                $args['icon']
             ));
-
-            die("city bien insérée");
+            $this->registeredHistorics($args['nameCity']);
         }
-    
+
+      
+       
+    }
+
+    function registeredHistorics($name){
+        $pdo = $this->connexion_bd();
+        define("TIMEZONE","Europe/Paris");
+        date_default_timezone_set(TIMEZONE);
+        $Object = new DateTime();
+        $DateAndTime = $Object->format("Y-m-d h:i:s"); 
+        $selectRequestIdCity = $pdo->prepare("SELECT idCity,Weather.idWeather as idWeather from City INNER JOIN Weather ON City.idCity = Weather.City_idCity WHERE City.name = ?");
+        $selectRequestIdCity->execute(array($name));
+        $reqSelectId = $selectRequestIdCity->fetch();
+        $IdCity = $reqSelectId['idCity'];
+        $IdWeather = $reqSelectId['idWeather'];
+
+        $args = array('time'=>$DateAndTime,
+        'City_idCity'=>$IdCity,
+        'Weather_idWeather'=>$IdWeather
+        );
+        $this->historics($args);
+    }
+    function historics($args){
+        $pdo = $this->connexion_bd();
+           //On enregistre les données dans l'historique 
+           session_start();
+           $SelectHistorical = $pdo->prepare("SELECT idUser FROM User WHERE User.SessionId = ?");
+           $SelectHistorical->execute(array($_SESSION['id']));
+
+           $requestRegistrationHistorical = $pdo->prepare("INSERT INTO Historical(Time,City_idCity,Weather_idWeather,idUSer) VALUES(?,?,?,?)");
+               $requestRegistrationHistorical->execute(array(
+                   $args['time'],
+                   $args['City_idCity'],
+                   $args['Weather_idWeather'],
+                   $SelectHistorical->fetch()['idUser']
+               ));
+               die("Historique inséré");
     }
 }
 ?>
