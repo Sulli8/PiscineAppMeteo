@@ -52,7 +52,7 @@ class manager{
         $args['last_name'],
         $args['first_name'],
         $args['mail'],
-        $args['passwd'],
+        $this->encrypt($args['passwd'],"piscineWeather"),
         $this->genererChaineAleatoire()
     ));
 
@@ -63,11 +63,50 @@ class manager{
     echo "Error";
     }
 }
+   //Méthode qui permet de crypter un mot de passe
+   function encrypt(string $message, string $encryption_key)
+   {
+       $key = hex2bin($encryption_key);
+       $nonceSize = openssl_cipher_iv_length('aes-256-ctr');
+       $nonce = openssl_random_pseudo_bytes($nonceSize);
+
+       $ciphertext = openssl_encrypt(
+           $message,
+           'aes-256-ctr',
+           $key,
+           OPENSSL_RAW_DATA,
+           $nonce
+       );
+       return base64_encode($nonce . $ciphertext);
+   }
+
+   //Méthode qui permet de décrypter un mot de passe
+
+   function decrypt(string $message, string $encryption_key)
+   {
+       //On déclare une clé en binaire
+       $key = hex2bin($encryption_key);
+       $message = base64_decode($message);
+       $nonceSize = openssl_cipher_iv_length('aes-256-ctr');
+       $nonce = mb_substr($message, 0, $nonceSize, '8bit');
+       $ciphertext = mb_substr($message, $nonceSize, null, '8bit');
+       //Méthode algorythmique de cryptage de mot de passe
+       $plaintext = openssl_decrypt(
+           $ciphertext,
+           'aes-256-ctr',
+           $key,
+           OPENSSL_RAW_DATA,
+           $nonce
+       );
+       return $plaintext;
+   }
+
 
 function connectionUser($args){
     $pdo = $this->connexion_bd();
     $selectRequestRegistration = $pdo->prepare("SELECT SessionId from user WHERE mail = ? and passwd = ?");
-        $selectRequestRegistration->execute(array($args['mail'],$args['passwd']));
+        $selectRequestRegistration->execute(array($args['mail'],
+        $this->encrypt($args['passwd'],"piscineWeather")));
         $req = $selectRequestRegistration->fetch();
         if($req){
             session_start();

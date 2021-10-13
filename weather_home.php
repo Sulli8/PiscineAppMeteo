@@ -146,7 +146,7 @@ function capitalizeFirstLetter(string){
 <div class="Mainweather">
 <div id="UserAccount">
       <button class="btnAccount">Nom user</button>
-      <button class="btnAccount">Voir mon compte </button>
+      <button class="btnAccount" onclick="location.href='manageAccount.php'">Voir mon compte </button>
       <button class="btnAccount">Voir mon historique </button>
       <button  class="btnAccount"onclick="location.href='controllerDestroySession.php'">Deconnexion</button>
     </div>
@@ -156,6 +156,7 @@ function capitalizeFirstLetter(string){
     <i class="fas fa-arrow-circle-left"></i> Retour
   </button>
   <div id="searchUser">
+    <h3>Cherchez une ville </h3>
      <input class='InputSearchUser' type="text" placeholder="Entrez une ville" id="searchWeather"/>
      <button class='btnSearchUser'value="Rechercher" onclick="ajaxData()" >Rechercher</button>
   </div>
