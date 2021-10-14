@@ -125,7 +125,7 @@ function weatherBlock(id,uppercase,data){
           "<h2><b>"+uppercase+"</b></h2>"
           +"<div>"+capitalizeFirstLetter(data.weather[0].description)+"</div>"
           +"<img style='display:block;margin:auto;' src='http://openweathermap.org/img/wn/"+data.weather[0].icon+"@2x.png'/>"
-        +"<div style='font-size:30px;'>"+parseInt(data.main.temp)+"°</div>"
+        +"<div style='font-size:30px;'> "+parseInt(data.main.temp)+"°</div>"
         +"<div style='font-size:30px;'>Max."+parseInt(data.main.temp_max)+"° Min."+parseInt(data.main.temp_min)+"°</div>"
         +"<div style='margin-top:10px;'>"
         +"<div>"+"Humidité "+data.main.humidity+" Fuseau Horaire"+data.timezone+" </div>"
