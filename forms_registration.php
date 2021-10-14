@@ -11,7 +11,7 @@
 
   <body>
      <form action="controller_registration.php" method="post">
-     <h2><i class="fas fa-smog"></i> Piscine | Météo</h2>
+     <h2><i class="fas fa-smog"></i>  Piscine | Météo</h2>
        <label for=""><i class="fas fa-signature"></i> Nom</label>
        <input type="text" name="last_name" required>
        <label for=""><i class="fas fa-id-card"></i> Prénom</label>

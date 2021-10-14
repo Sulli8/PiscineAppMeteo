@@ -11,7 +11,7 @@
   </head>
   <body>
   <form action="controllerConnection.php" method="post">
-    <h2><i class="fas fa-smog"></i> Piscine | Météo</h2>
+    <h2><i class="fas fa-smog"></i>  Piscine | Météo</h2>
        <label for=""><i class="fas fa-envelope"></i> Mail</label>
        <input type="mail" name="mail" required>
        <label for=""><i class="fas fa-lock"></i> Mot de passe</label>
