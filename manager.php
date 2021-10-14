@@ -2,6 +2,7 @@
 
 
 class manager{
+    //on se connecte 
     function connexion_bd(){
         //ON déclare les variables d'environnement afin de cacher le informations de gestion de conneixon à la BDD
     
@@ -35,6 +36,7 @@ class manager{
        }
        return $bdd;
     }
+    //Méthode qui permet de générer un chaine aléatoire
     function genererChaineAleatoire($longueur = 8, $listeCar = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ?/!-_')
     {
         $chaine = '';
@@ -45,6 +47,7 @@ class manager{
         }
         return $chaine;
     }
+    //on inscrit l'utilisateur
     function registrationUser($args){
         $pdo = $this->connexion_bd();
         $requestRegistration = $pdo->prepare("INSERT INTO User(last_name,first_name,mail,passwd,SessionId) VALUES(?,?,?,?,?)");
@@ -63,7 +66,7 @@ class manager{
     echo "Error";
     }
 }
-
+  //Clé qui permet le cryptage de mot de passe
 function encryptionKey(){
     $private_secret_key = '1f4276388ad3214c873428dbef42243f';
     return $private_secret_key;
@@ -86,7 +89,6 @@ function encryptionKey(){
    }
 
    //Méthode qui permet de décrypter un mot de passe
-
    function decrypt(string $message, string $encryption_key)
    {
        //On déclare une clé en binaire
@@ -106,7 +108,7 @@ function encryptionKey(){
        return $plaintext;
    }
 
-
+//Méthode de connexion utilisateur 
 function connectionUser($args){
     $pdo = $this->connexion_bd();
    
@@ -133,6 +135,7 @@ function connectionUser($args){
         }
 
 }
+//méthode de modification de donnée 
 function UpdateDataUser($args){
     $pdo = $this->connexion_bd();
     session_start();
@@ -149,9 +152,11 @@ function UpdateDataUser($args){
     session_destroy();
     header("Location:index.php");
 }
-
+//Méthode d'insertion de météo
     function registrationWeather($args){
         $pdo = $this->connexion_bd();
+
+        //On vérifie si la ville existe dans la base 
         $selectRequestRegistration = $pdo->prepare("SELECT * from City WHERE name = ?");
         $selectRequestRegistration->execute(array($args['nameCity']));
         $req = $selectRequestRegistration->fetch();
@@ -190,6 +195,7 @@ function UpdateDataUser($args){
            
         }
         else{
+                    //sinon on insert la ville et sa méteo 
             $requestRegistration = $pdo->prepare("INSERT INTO City(name) VALUES(?)");
             $requestRegistration->execute(array(
                 $args['nameCity']
@@ -217,7 +223,7 @@ function UpdateDataUser($args){
       
        
     }
-
+    //Méthode qui permet de stocker l'historique du user
     function registeredHistorics($name){
         $pdo = $this->connexion_bd();
         define("TIMEZONE","Europe/Paris");
@@ -236,6 +242,7 @@ function UpdateDataUser($args){
         );
         $this->historics($args);
     }
+    //méthode qui permet l'insertion de l'historique 
     function historics($args){
         $pdo = $this->connexion_bd();
            //On enregistre les données dans l'historique 
@@ -251,6 +258,25 @@ function UpdateDataUser($args){
                    $SelectHistorical->fetch()['idUser']
                ));
                die("Historique inséré");
+    }
+
+    function AddFavourites($args){
+        $pdo = $this->connexion_bd();
+        session_start();
+        $SelectRequestFavourites = $pdo->prepare("SELECT idCity From City Where name = ?");
+        $SelectRequestFavourites->execute(array($args['nameCity']));
+
+        $SelectRequestIdUSer = $pdo->prepare("SELECT idUser from User Where SessionId = ?");
+        $SelectRequestIdUSer->execute(array($_SESSION['id']));
+
+        $idUser = $SelectRequestIdUSer->fetch()['idUser'];
+        $idCity = $SelectRequestFavourites->fetch()['idCity'];
+
+        $requestInsertFavourites = $pdo->prepare("INSERT INTO favourite(User_idUser,City_idCity) VALUES(?,?) ");
+        $requestInsertFavourites->execute(array($idUser,$idCity));
+
+        die("Bien insérée");
+
     }
 }
 ?>

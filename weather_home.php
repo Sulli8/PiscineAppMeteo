@@ -7,7 +7,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="">
     <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://kit.fontawesome.com/8a3192b16c.js" crossorigin="anonymous"></script>
-
+    <link href="weatherHome.css" rel="stylesheet">
   </head>
   <script>
     // Define function to capitalize the first letter of a string
@@ -15,27 +15,61 @@ function capitalizeFirstLetter(string){
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+function weatherBlock(id,uppercase,data){
+ 
+  $(id).html(
+          "<h2><b>"+uppercase+"</b></h2>"
+          +"<div>"+capitalizeFirstLetter(data.weather[0].description)+"</div>"
+          +"<img style='display:block;margin:auto;' src='http://openweathermap.org/img/wn/"+data.weather[0].icon+"@2x.png'/>"
+        +"<div style='font-size:30px;'>"+parseInt(data.main.temp)+"°</div>"
+        +"<div style='font-size:30px;'>Max."+parseInt(data.main.temp_max)+"° Min."+parseInt(data.main.temp_min)+"°</div>"
+        +"<div style='margin-top:10px;'>"
+        +"<div>"+"Humidité "+data.main.humidity+" Timezone  "+data.timezone+" </div>"
+        +"<div>"+"Latitude  "+data.coord.lat+" Longitude  "+data.coord.lon+"</div>"
+        +"<div>"+"Vitesse Du vent  "+data.wind.speed+" Degré Du vent "+data.wind.deg+"</div>"
+        +"</div>"+
+        "<button style='margin-bottom:10px;'class='favourites' id='btnAddFavourites' > Ajouter aux favoris <i class='fas fa-star'></i></button>"
+
+        );
+
+        $('#btnAddFavourites').click((e) => {
+          e.preventDefault();
+          $('#btnAddFavourites').css({
+            'background':'yellow'
+          })
+
+        var objectWeather = {
+          nameCity : document.getElementById("searchWeather").value,
+          description : data.weather[0].description,
+          humidity : data.main.humidity,
+          temp : data.main.temp,
+          timezone : data.timezone,
+          latitude: data.coord.lat,
+          longitude : data.coord.lon,
+          icon:data.weather[0].icon,
+          speed_wind : data.wind.speed,
+          deg_wind: data.wind.deg
+      }
+      
+      $.post( "controllerAddFavourites.php",objectWeather)
+      .done(function( data ) {
+        console.log( "Data Loaded: " + data );
+        
+        });
+  
+
+    console.log("Favoris"+uppercase)
+  })
+}
     $('#weather').hide();
     function ajaxData(){
       var post = document.getElementById('searchWeather').value;
-      var search = "https://api.openweathermap.org/data/2.5/weather?q="+post+"&appid=7a398628daf0ce99c731ee47f87e3fb2&lang=fr"
+      var search = "https://api.openweathermap.org/data/2.5/weather?q="+post+"&units=metric&appid=c50475598345a95dd753f9eb0fd8f23e&lang=fr"
       $.get(search, function( data ) {
         console.log(data);
         console.log(data.weather[0].icon);
         var uppercase = capitalizeFirstLetter($("#searchWeather").val());
-
-        $('#weather').html(
-          "<div style='font-size:20px;'>"+uppercase+"</div>"
-          +"<div>"+capitalizeFirstLetter(data.weather[0].description)+"</div>"
-          +"<img style='display:block;margin:auto;' src='http://openweathermap.org/img/wn/"+data.weather[0].icon+"@2x.png'/>"
-        +"<div style='font-size:30px;'>"+data.main.temp+"°</div>"
-        +"<div style='font-size:30px;'>Max."+data.main.temp_max+"° Min."+data.main.temp_min+"°</div>"
-        +"<div style='margin-top:10px;'>"
-        +"<div>"+"Humidity "+data.main.humidity+" Timezone  "+data.timezone+" </div>"
-        +"<div>"+"Latitude  "+data.coord.lat+" Longitude  "+data.coord.lon+"</div>"
-        +"<div>"+"Speed Wind  "+data.wind.speed+" Deg Wind  "+data.wind.deg+"</div>"
-        +"</div>"
-        );
+        weatherBlock('#weather',uppercase,data);
         $('#searchUser').hide();
         $('#weather').show();
         $('#back').show();
@@ -64,93 +98,68 @@ function capitalizeFirstLetter(string){
   });
   
       });
+  }
 
-   
+  $(document).ready(function(){  
 
 
+    NameCityFrance = [];
+      $.get("city.list.min.json",function(data){
+      var AllCity = JSON.stringify(data);
+      var objAllCity = JSON.parse(AllCity);
+      for (let index = 0; index < objAllCity.length; index++) {
+         if(objAllCity[index].country == 'FR'){
+           NameCityFrance.push(objAllCity[index].name);
+        }
       }
+
+      for (let index = 0; index < 20; index++) {
+        var search = "https://api.openweathermap.org/data/2.5/weather?q="+NameCityFrance[index]+"&units=metric&appid=c50475598345a95dd753f9eb0fd8f23e&lang=fr"
+         $.get(search,function(data){
+            data = JSON.stringify(data);
+            data = JSON.parse(data)
+            uppercase = capitalizeFirstLetter(NameCityFrance[index])
+            id = "#AllWeather"
+            $(id).append(
+              "<div style='padding:10px;margin-bottom:5px;width:auto;height:auto;border:3px solid #27ae60;border-radius:10px;margin-left:5px;display:inline-block;justify-content:center;'>"+
+          "<h2><b>"+uppercase+"</b></h2>"
+          +"<div>"+capitalizeFirstLetter(data.weather[0].description)+"</div>"
+          +"<img style='display:block;margin:auto;' src='http://openweathermap.org/img/wn/"+data.weather[0].icon+"@2x.png'/>"
+        +"<div style='font-size:30px;'>"+parseInt(data.main.temp)+"°</div>"
+        +"<div style='font-size:30px;'>Max."+parseInt(data.main.temp_max)+"° Min."+parseInt(data.main.temp_min)+"°</div>"
+        +"<div style='margin-top:10px;'>"
+        +"<div>"+"Humidité "+data.main.humidity+" Fuseau Horaire"+data.timezone+" </div>"
+        +"<div>"+"Latitude  "+data.coord.lat+" Longitude  "+data.coord.lon+"</div>"
+        +"<div>"+"Vitesse Du vent  "+data.wind.speed+" Degré du vent "+data.wind.deg+"</div>"
+        +"</div>"+"</div>"
+        );
+          })
+
+        
+      }
+    });
+  });
+
+ 
   </script>
+<!--<i style='color:white;' class='fas fa-star'></i>-->
 
-<style>
-    body{
-      background:#2c3e50;
-      font-size:20px;
-      font-family:sans-serif;
-    }
-
-    .Mainweather{
-      margin:auto;
-      transform:translateY(-50%,-50%);
-      width:800px;
-      height:auto;
-      text-align:center;
-      color:white;
-    }
-
-    .btnAccount{
-      background:#27ae60;
-      display:inline-block;
-      margin-top:10px;
-      color:#fff;
-      width:200px;
-      padding:20px;
-      border:none;
-      border-radius:50px;
-    }
-
-    .btnSearchUser{
-      margin-top:10px;
-      color:#27ae60;
-      background:#fff;
-      width:200px;
-      padding:20px;
-      border:none;
-      border-radius:50px;
-    }
-
-    .weatherContains{
-      margin-top:20px;
-      border:3px solid #27ae60;
-      border-radius:10px;
-    }
-
-    .InputSearchUser{
-      display:block;
-      margin:auto;
-      background:#27ae60;
-      color:#fff;
-      width:200px;
-      padding:20px;
-      border:none;
-      text-align:center;
-      border-radius:50px;
-    }
-    #searchUser{
-      margin-top:10px;
-    }
-
-    .btnBack{
-      margin-top:10px;
-      background:#27ae60;
-      color:#fff;
-      width:100px;
-      padding:7px;
-      border:none;
-      border-radius:10px;
-    }
-
-    #weather{
-      margin-top:20px;
-    }
-  </style>
   <body>
    
 <div class="Mainweather">
 <div id="UserAccount">
-      <button class="btnAccount">Nom user</button>
-      <button class="btnAccount" onclick="location.href='manageAccount.php'">Voir mon compte </button>
+  <?php require_once("manager.php");
+  $manager = new manager();
+  $pdo = $manager->connexion_bd();
+  $selectName = $pdo->prepare("SELECT * From User WHERE SessionId = ?");
+  $selectName->execute(array($_SESSION['id']));
+  $selectName = $selectName->fetch();
+  ?>
+      <button class="btnAccount"><i class="fas fa-user"></i> <?php echo ucfirst($selectName['first_name']); ?></button>
+      <button class="btnAccount" onclick="location.href='manageAccount.php'"><i class="fas fa-tools"></i> Gérer mon compte </button>
+      <button class="btnAccount" onclick="location.href='viewFavourites.php'"><i class="fas fa-eye"></i> Voir mes favoris </button>
       <button class="btnAccount" onclick="location.href='viewHistorique.php'"><i class="fas fa-eye"></i> Voir mon historique </button>
-      <button  class="btnAccount" onclick="location.href='controllerDestroySession.php'">Deconnexion</button>
+      <button  class="btnAccount" onclick="location.href='controllerDestroySession.php'"><i class="fas fa-power-off"></i> Deconnexion</button>
     </div>
 
 <div class="weatherContains">
@@ -162,12 +171,20 @@ function capitalizeFirstLetter(string){
      <input class='InputSearchUser' type="text" placeholder="Entrez une ville" id="searchWeather"/>
      <button class='btnSearchUser'value="Rechercher" onclick="ajaxData()" >Rechercher</button>
   </div>
-
-
     <div id="weather">
+    </div>
+  </div>
+</div>
 
-    </div>
-    </div>
+<h2 style="text-align:center;color:#fff;">
+<i class="fas fa-cloud"></i>
+<b>Méteo de toutes les villes</b>
+  </h2>
+
+<div class="DisplayedAllWeather" id="AllWeather">
+
+
+
 </div>
 
   </body>

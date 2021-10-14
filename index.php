@@ -9,6 +9,7 @@
   </head>
   <body>
       <?php 
+      //On vérifie si l'utilisateur est connecté sinon on le redirige sur une autre page
       if(isset($_SESSION['id'])){
         include "weather_home.php";
       }
