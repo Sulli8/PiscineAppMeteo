@@ -20,7 +20,7 @@
         height:300px;
         border-radius:20px;
         padding:20px;
-        border:3px solid #27ae60;
+        border:1px solid #27ae60;
         display:inline-block;
         margin:auto;font-size:20px;
       }

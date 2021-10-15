@@ -13,13 +13,13 @@ body{
     color:white;
   }
   .favourites{
-    background:#fff;
-    color:#27ae60;
+    background:#27ae60;
+    color:#fff;
     width:200px;
-    padding:2px;
+    padding:5px;
     border:none;
     margin-top:10px;
-    border-radius:7px;
+    border-radius:50px;
   }
   .favourites:hover{
     background:yellow;
@@ -51,9 +51,7 @@ body{
   }
 
   .weatherContains{
-    margin-top:20px;
-    border:3px solid #27ae60;
-    border-radius:10px;
+    margin-top:50px;
   }
 
   .InputSearchUser{
@@ -84,9 +82,15 @@ body{
   #weather{
     margin-top:20px;
   }
-
+  .searchWeatherUser{
+    border:1px solid #27ae60;
+    border-radius:10px ;
+  }
   .DisplayedAllWeather{
-    display:block;
+    display:flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
     margin:auto;
     margin-top:10px;
     color:#fff;

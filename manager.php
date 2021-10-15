@@ -149,8 +149,7 @@ function UpdateDataUser($args){
         $this->encrypt($args['passwd'],$this->encryptionKey()),
         $idUSer
     ));
-    session_destroy();
-    header("Location:index.php");
+    header("Location:manageAccount.php");
 }
 //Méthode d'insertion de météo
     function registrationWeather($args){

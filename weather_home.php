@@ -18,6 +18,7 @@ function capitalizeFirstLetter(string){
 function weatherBlock(id,uppercase,data){
  
   $(id).html(
+    "<div class='searchWeatherUser'>"+
           "<h2><b>"+uppercase+"</b></h2>"
           +"<div>"+capitalizeFirstLetter(data.weather[0].description)+"</div>"
           +"<img style='display:block;margin:auto;' src='http://openweathermap.org/img/wn/"+data.weather[0].icon+"@2x.png'/>"
@@ -28,8 +29,8 @@ function weatherBlock(id,uppercase,data){
         +"<div>"+"Latitude  "+data.coord.lat+" Longitude  "+data.coord.lon+"</div>"
         +"<div>"+"Vitesse Du vent  "+data.wind.speed+" Degré Du vent "+data.wind.deg+"</div>"
         +"</div>"+
-        "<button style='margin-bottom:10px;'class='favourites' id='btnAddFavourites' > Ajouter aux favoris <i class='fas fa-star'></i></button>"
-
+        "<button style='margin-bottom:10px;' class='favourites' id='btnAddFavourites' > Ajouter aux favoris <i class='fas fa-star'></i></button>"
++"<div>"
         );
 
         $('#btnAddFavourites').click((e) => {
@@ -121,7 +122,7 @@ function weatherBlock(id,uppercase,data){
             uppercase = capitalizeFirstLetter(NameCityFrance[index])
             id = "#AllWeather"
             $(id).append(
-              "<div style='padding:10px;margin-bottom:5px;width:auto;height:auto;border:3px solid #27ae60;border-radius:10px;margin-left:5px;display:inline-block;justify-content:center;'>"+
+              "<div style='padding:10px;margin-bottom:5px;width:auto;height:auto;border:1px solid #27ae60;border-radius:10px;margin-left:5px;'>"+
           "<h2><b>"+uppercase+"</b></h2>"
           +"<div>"+capitalizeFirstLetter(data.weather[0].description)+"</div>"
           +"<img style='display:block;margin:auto;' src='http://openweathermap.org/img/wn/"+data.weather[0].icon+"@2x.png'/>"
@@ -167,7 +168,6 @@ function weatherBlock(id,uppercase,data){
     <i class="fas fa-arrow-circle-left"></i> Retour
   </button>
   <div id="searchUser">
-    <h3><i class="fas fa-search"></i> Cherchez une ville </h3>
      <input class='InputSearchUser' type="text" placeholder="Entrez une ville" id="searchWeather"/>
      <button class='btnSearchUser'value="Rechercher" onclick="ajaxData()" >Rechercher</button>
   </div>
