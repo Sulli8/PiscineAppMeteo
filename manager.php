@@ -277,5 +277,47 @@ function UpdateDataUser($args){
         die("Bien insérée");
 
     }
+
+    function deleteHistorics($args){
+        $pdo = $this->connexion_bd();
+        $deleteHistoric = $pdo->prepare("DELETE FROM historical WHERE City_idCity = ? AND Weather_idWeather = ?");
+        $deleteHistoric->execute(array(
+            $args['idCity'],
+            $args['idWeather']
+        ));
+        header("Location:viewHistorique.php");
+        //die("Historique Supprimée ! ");
+    }
+   
+    function deleteAllHistorics($args){
+        $pdo = $this->connexion_bd();
+        $deleteHistoric = $pdo->prepare(" DELETE FROM Historical WHERE idUser = (SELECT idUSer FROM User WHERE User.SessionId = ?)");
+        $deleteHistoric->execute(array(
+            $args['SessionId']
+        ));
+        header("Location:viewHistorique.php");
+        //die("Historique Supprimée ! ");
+    }
+
+
+    function deleteFavourites($args){
+        $pdo = $this->connexion_bd();
+        $deleteFavourite = $pdo->prepare("DELETE FROM favourite WHERE City_idCity = ? ");
+        $deleteFavourite->execute(array(
+            $args['idCity'],
+        ));
+        header("Location:viewFavourites.php");
+        //die("Historique Supprimée ! ");
+    }
+   
+    function deleteAllFavourites($args){
+        $pdo = $this->connexion_bd();
+        $deleteFavourite = $pdo->prepare(" DELETE FROM favourite WHERE User_idUser = (SELECT idUSer FROM User WHERE User.SessionId = ?)");
+        $deleteFavourite->execute(array(
+            $args['SessionId']
+        ));
+        header("Location:viewFavourites.php");
+        //die("Historique Supprimée ! ");
+    }
 }
 ?>

@@ -122,7 +122,7 @@ function weatherBlock(id,uppercase,data){
             uppercase = capitalizeFirstLetter(NameCityFrance[index])
             id = "#AllWeather"
             $(id).append(
-              "<div style='padding:10px;margin-bottom:5px;width:auto;height:auto;border:1px solid #27ae60;border-radius:10px;margin-left:5px;'>"+
+              "<div style='padding:20px;margin-bottom:5px;width:auto;height:auto;border:1px solid #27ae60;border-radius:10px;margin-left:5px;'>"+
           "<h2><b>"+uppercase+"</b></h2>"
           +"<div>"+capitalizeFirstLetter(data.weather[0].description)+"</div>"
           +"<img style='display:block;margin:auto;' src='http://openweathermap.org/img/wn/"+data.weather[0].icon+"@2x.png'/>"
@@ -169,7 +169,7 @@ function weatherBlock(id,uppercase,data){
   </button>
   <div id="searchUser">
      <input class='InputSearchUser' type="text" placeholder="Entrez une ville" id="searchWeather"/>
-     <button class='btnSearchUser'value="Rechercher" onclick="ajaxData()" >Rechercher</button>
+     <button class='btnSearchUser'value="Rechercher" onclick="ajaxData()" ><i class="fas fa-search"></i> Rechercher</button>
   </div>
     <div id="weather">
     </div>
