@@ -154,17 +154,27 @@ function connectionUser($args){
 function UpdateDataUser($args){
     $pdo = $this->connexion_bd();
     session_start();
-    $select = $pdo->prepare("SELECT idUser from User WHERE SessionId = ? ");
-    $select->execute(array($_SESSION['id']));
-    $idUSer = $select->fetch()['idUser'];
-    $UpdateDataUser = $pdo->prepare("UPDATE User set last_name = ?,first_name = ?,mail = ?,passwd = ? WHERE idUser = ? ");
-    $UpdateDataUser->execute(array($args['last_name'],
-        $args['first_name'],
-        $args['mail'],
-        $this->encrypt($args['passwd'],$this->encryptionKey()),
-        $idUSer
-    ));
-    header("Location:manageAccount.php");
+
+    $selectIssetMail = $pdo->prepare('SELECT count(*) as cpt from User WHERE mail = ?');
+    $selectIssetMail->execute(array($args['mail']));
+    $table = $selectIssetMail->fetch(PDO::FETCH_ASSOC);
+    if($table['cpt'] > 0){
+        echo "Ce mail Existe déja !";
+    }
+    else{
+        $select = $pdo->prepare("SELECT idUser from User WHERE SessionId = ? ");
+        $select->execute(array($_SESSION['id']));
+        $idUSer = $select->fetch()['idUser'];
+        $UpdateDataUser = $pdo->prepare("UPDATE User set last_name = ?,first_name = ?,mail = ?,passwd = ? WHERE idUser = ? ");
+        $UpdateDataUser->execute(array($args['last_name'],
+            $args['first_name'],
+            $args['mail'],
+            $this->encrypt($args['passwd'],$this->encryptionKey()),
+            $idUSer
+        ));
+        header("Location:manageAccount.php");
+    }
+   
 }
 //Méthode d'insertion de météo
     function registrationWeather($args){
