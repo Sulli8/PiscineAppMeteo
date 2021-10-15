@@ -144,6 +144,9 @@ function connectionUser($args){
       
             header("Location:index.php");
         }
+        else{
+            echo "Error Connection";
+        }
     }
         else{
             echo "Error Connection";
