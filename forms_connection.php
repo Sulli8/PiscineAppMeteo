@@ -11,8 +11,8 @@
   </head>
 
   <script>
+    //Cette fonction qui permet de récupérer les inforamtions du tableau data et affiche une div 
     function weatherBlock(id,uppercase,data){
- 
  $(id).html(
    "<div class='searchWeatherUser'>"+
          "<h2><b>"+uppercase+"</b></h2>"
@@ -30,7 +30,7 @@
        }
 
 
-
+//ce fonction recupère les informations de la méteo en fonction de la recherche de l'utilisateur
     function ajaxData(){
       var post = document.getElementById('searchWeather').value;
       var search = "https://api.openweathermap.org/data/2.5/weather?q="+post+"&units=metric&appid=c50475598345a95dd753f9eb0fd8f23e&lang=fr"
@@ -66,11 +66,13 @@
   
       });
   }
+
+  //Ce fonction permet de mettre en majuscule la premère lettre d'une chaîne de caractère
 function capitalizeFirstLetter(string){
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-
+//Au chargement de la page on cache et on affiche des div en fonction de leurs id
 $(document).ready(function(){
 
   $('#btnBackNo').hide();
@@ -81,9 +83,8 @@ $(document).ready(function(){
           $("#FormConnectionUser").hide();
           $('#btnBackNo').hide();
         });
-
+//On ajoute le click au bouton btnConnection
   $('#btnConnection').click(function(){
-   
           $("#searchWeatherNoUser").hide();
           $("#AllWeather").hide();
           $("#title").hide();
@@ -93,6 +94,7 @@ $(document).ready(function(){
 
 
   NameCityFrance = [];
+  //on recupère les villes sur le fichier JSON city.list.min.json puis on sélectionne le pays 
   $.get("city.list.min.json",function(data){
   var AllCity = JSON.stringify(data);
   var objAllCity = JSON.parse(AllCity);
@@ -101,7 +103,7 @@ $(document).ready(function(){
        NameCityFrance.push(objAllCity[index].name);
     }
   }
-
+  //ON récupère la méteo en fonction des villes que l'on a récupère depuis la requête AJAX 
   for (let index = 0; index < 20; index++) {
     var search = "https://api.openweathermap.org/data/2.5/weather?q="+NameCityFrance[index]+"&units=metric&appid=c50475598345a95dd753f9eb0fd8f23e&lang=fr"
      $.get(search,function(data){

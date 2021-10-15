@@ -59,6 +59,7 @@
       }
   </style>
   <script>
+    //Cette fonction permet de supprimer un historique
     function DeleteHistorics(idCity,idWeather){
       data = {
         AllHistorics : 0,
@@ -70,7 +71,7 @@
        window.location.href = "viewHistorique.php";
         });
     }
-
+    //Cette fonction permet de supprimer tous les historique 
     function DeleteAllhistorics(idSession){
       console.log(idSession);
       data = {

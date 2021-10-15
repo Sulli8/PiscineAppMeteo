@@ -57,6 +57,7 @@ class manager{
             echo "Ce mail Existe déja !";
         }
         else{
+            //on insert si l'utilisateur n'existe pas 
             $requestRegistration = $pdo->prepare("INSERT INTO User(last_name,first_name,mail,passwd,SessionId) VALUES(?,?,?,?,?)");
             $requestRegistration->execute(array(
             $args['last_name'],
@@ -67,6 +68,7 @@ class manager{
         ));
     
         if($requestRegistration){
+
             header("Location:index.php");
         }
         else{
@@ -271,7 +273,7 @@ function UpdateDataUser($args){
                ));
                die("Historique inséré");
     }
-
+//cette fonction ajouter des favoris 
     function AddFavourites($args){
         $pdo = $this->connexion_bd();
         session_start();
@@ -291,6 +293,7 @@ function UpdateDataUser($args){
 
     }
 
+//cette fonction supprime des historique 
     function deleteHistorics($args){
         $pdo = $this->connexion_bd();
         $deleteHistoric = $pdo->prepare("DELETE FROM historical WHERE City_idCity = ? AND Weather_idWeather = ?");
@@ -301,7 +304,7 @@ function UpdateDataUser($args){
         header("Location:viewHistorique.php");
         //die("Historique Supprimée ! ");
     }
-   
+   //cette fonction supprime des historique 
     function deleteAllHistorics($args){
         $pdo = $this->connexion_bd();
         $deleteHistoric = $pdo->prepare(" DELETE FROM Historical WHERE idUser = (SELECT idUSer FROM User WHERE User.SessionId = ?)");
@@ -312,7 +315,7 @@ function UpdateDataUser($args){
         //die("Historique Supprimée ! ");
     }
 
-
+//cette fonction supprime des favoris 
     function deleteFavourites($args){
         $pdo = $this->connexion_bd();
         $deleteFavourite = $pdo->prepare("DELETE FROM favourite WHERE City_idCity = ? ");

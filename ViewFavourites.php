@@ -59,7 +59,7 @@
       }
   </style>
   <script>
-
+//Cette fonction d'envoyer les informations nécesssaire à la suppression des favoris 
 function DeleteFavourites(idCity,idWeather){
       data = {
         AllFavourites : 0,
@@ -70,7 +70,7 @@ function DeleteFavourites(idCity,idWeather){
        window.location.href = "viewFavourites.php";
         });
     }
-
+//Cette fonction fait la même en supprimant tous les favoris
     function DeleteAllFavourites(idSession){
       console.log(idSession);
       data = {

@@ -16,7 +16,7 @@ function capitalizeFirstLetter(string){
 }
 
 function weatherBlock(id,uppercase,data){
- 
+  //On ajouter des informations dans une div par rapport a son id
   $(id).html(
     "<div class='searchWeatherUser'>"+
           "<h2><b>"+uppercase+"</b></h2>"
@@ -51,7 +51,7 @@ function weatherBlock(id,uppercase,data){
           speed_wind : data.wind.speed,
           deg_wind: data.wind.deg
       }
-      
+      //On envoie les données lorsque l'utilisateur a effectué une recherche
       $.post( "controllerAddFavourites.php",objectWeather)
       .done(function( data ) {
         console.log( "Data Loaded: " + data );
