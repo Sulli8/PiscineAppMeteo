@@ -1,6 +1,13 @@
 <?php 
 require_once("manager.php");
 $manager = new manager();
-$manager->registrationUser($_POST);
+
+if(filter_var($_POST['mail'],FILTER_VALIDATE_EMAIL)){
+    $manager->registrationUser($_POST);
+}
+else{
+    echo "Erreur ! ";
+}
+
 
 ?> 

@@ -167,7 +167,7 @@ $(document).ready(function(){
        <label for=""><i class="fas fa-lock"></i> Mot de passe</label>
        <input type="password" name="passwd" required>
        <input type="submit" value="Connection"/>
-       <a href="forms_registration.php">Vous n'avez pas de compte?</a>
+       <a style="margin-bottom:10px;"href="forms_registration.php">Vous n'avez pas de compte?</a>
   </form> 
 
   

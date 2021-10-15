@@ -50,20 +50,28 @@ class manager{
     //on inscrit l'utilisateur
     function registrationUser($args){
         $pdo = $this->connexion_bd();
-        $requestRegistration = $pdo->prepare("INSERT INTO User(last_name,first_name,mail,passwd,SessionId) VALUES(?,?,?,?,?)");
-        $requestRegistration->execute(array(
-        $args['last_name'],
-        $args['first_name'],
-        $args['mail'],
-        $this->encrypt($args['passwd'],$this->encryptionKey()),
-        $this->genererChaineAleatoire()
-    ));
-
-    if($requestRegistration){
-        header("Location:index.php");
-    }
-    else{
-    echo "Error";
+        $selectIssetMail = $pdo->prepare('SELECT count(*) as cpt from User WHERE mail = ?');
+        $selectIssetMail->execute(array($args['mail']));
+        $table = $selectIssetMail->fetch(PDO::FETCH_ASSOC);
+        if($table['cpt'] > 0){
+            echo "Ce mail Existe déja !";
+        }
+        else{
+            $requestRegistration = $pdo->prepare("INSERT INTO User(last_name,first_name,mail,passwd,SessionId) VALUES(?,?,?,?,?)");
+            $requestRegistration->execute(array(
+            $args['last_name'],
+            $args['first_name'],
+            $args['mail'],
+            $this->encrypt($args['passwd'],$this->encryptionKey()),
+            $this->genererChaineAleatoire()
+        ));
+    
+        if($requestRegistration){
+            header("Location:index.php");
+        }
+        else{
+        echo "Error";
+        }
     }
 }
   //Clé qui permet le cryptage de mot de passe
@@ -115,22 +123,23 @@ function connectionUser($args){
     $selectRequestRegistration = $pdo->prepare("SELECT passwd from User WHERE mail = ? ");
         $selectRequestRegistration->execute(array($args['mail']));
         $reqPass = $selectRequestRegistration->fetch();
-
+        
         if(!filter_var($args['mail'],FILTER_VALIDATE_EMAIL)){
-            echo "Ce n'est pas un Mail !"."\n";
+            echo "Ce n'est pas un Mail";
         }
         if($reqPass != false){
             if(!empty(sizeof($reqPass)) && $this->decrypt($reqPass["passwd"],$this->encryptionKey()) == $args['passwd']){
             $genereid = $this->genererChaineAleatoire(20);
+            
             //On modifie son id par rapport à son mail
             $mail = $args['mail'];
             $request = $pdo->prepare("UPDATE User set SessionId=:SessionId WHERE mail='$mail'");
             $insert_genereId = $request->execute(array(
                 'SessionId' => $genereid
             ));
-
             session_start();
             $_SESSION['id'] = $genereid;
+      
             header("Location:index.php");
         }
     }
