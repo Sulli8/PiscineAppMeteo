@@ -115,6 +115,10 @@ function connectionUser($args){
     $selectRequestRegistration = $pdo->prepare("SELECT passwd from User WHERE mail = ? ");
         $selectRequestRegistration->execute(array($args['mail']));
         $reqPass = $selectRequestRegistration->fetch();
+
+        if(!filter_var($args['mail'],FILTER_VALIDATE_EMAIL)){
+            echo "Ce n'est pas un Mail !"."\n";
+        }
         if($reqPass != false){
             if(!empty(sizeof($reqPass)) && $this->decrypt($reqPass["passwd"],$this->encryptionKey()) == $args['passwd']){
             $genereid = $this->genererChaineAleatoire(20);
